@@ -31,7 +31,7 @@ class FileManager {
 		return $return;
 	}
 
-	public static function image_convert($file, $tofile, $extension='jpg') {
+	public static function image_convert($file, $tofile, $extension='jpg', $in_extension=null) {
 		$allowed_types = array(
 			'jpg' => array('type' => 'image/jpeg', 'create' => 'imagecreatefromjpeg', 'save' => 'imagejpeg'),
 			'png' => array('type' => 'image/png', 'create' => 'imagecreatefrompng', 'save' => 'imagepng'),
@@ -41,11 +41,20 @@ class FileManager {
 
 		$file_type = null;
 
-		$finfo = new finfo(FILEINFO_MIME_TYPE);
-		$mime_type = $finfo->file($file);
+		if(class_exists('finfo')) {
+			$finfo = new finfo(FILEINFO_MIME_TYPE);
+			$mime_type = $finfo->file($file);
+		} else {
+			$ext = $in_extension;
+			if($ext === 'jpg') {
+				$ext = 'jpeg';
+			}
+			$mime_type = 'image/'.$ext;
+		}
+
 		foreach($allowed_types as $key => $value) {
 			if($value['type'] === $mime_type) {
-				$file_type = $key;
+				$file_type = $allowed_types[$key];
 				break;
 			}
 		}
@@ -54,8 +63,7 @@ class FileManager {
 			return false;
 		}
 
-		$create = $file_type['create'];
-		$source_image = @$create($file);
+		$source_image = call_user_func($file_type['create'], $file);
 
 		if($source_image === null || $source_image === false) {
 			return false;
@@ -71,15 +79,15 @@ class FileManager {
 			return false;
 		}
 
-		$save = $file_type['save'];
-		@$save($destination_image, $tofile.".".$extension);
+		$save = $allowed_types[$extension];
+		@call_user_func_array($save['save'], array($destination_image, $tofile.".".$extension, 95));
 
 		imagedestroy($source_image);
 		imagedestroy($destination_image);
 
 		return true;
 	}
-
+	
 	public static function download($url=null) {
 		$return = null;
 		if($url != null && is_string($url) && filter_var($url, FILTER_VALIDATE_URL)) {
