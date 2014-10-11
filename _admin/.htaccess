@@ -1,0 +1,13 @@
+RewriteEngine Off
+
+<Files ~ "\.tpl$">
+Order allow,deny
+Deny from all
+</Files>
+
+<IfModule mod_php5.c>
+php_value upload_max_filesize 400000000
+php_value post_max_size 410000000
+php_value memory_limit 420000000
+php_value max_input_time 20
+</IfModule>
