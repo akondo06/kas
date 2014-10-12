@@ -33,31 +33,21 @@ class Games extends Section {
 
 			if(array_key_exists('submit', $_POST)) {
 
+				$input_data = (!empty($_FILES)) ? array_merge($_POST, $_FILES) : $_POST;
 
 				// Check if the given data is valid in a way ...
-				$data = $this->verify_input($_POST, array("instructions", "walkthrough", "file", "thumb"));
-
+				$data = $this->verify_input($input_data, array("instructions", "walkthrough", "file", "thumb"));
 
 				if($data !== null) {
 					$local = $this->game($data->slug);
 					if($local === null || $local->id == $id) {
-						// MOVE THESE in the verify_input method!
-						$file = FileManager::upload_file($_FILES['file'], "../".$KAS->files_path(), $data->slug);
-						$thumb = FileManager::upload_file($_FILES['thumb'], "../".$KAS->thumbs_path(), $data->slug);
+						$db->query("UPDATE games SET name='".$data->name."', slug='".$data->slug."', description='".$data->description."', instructions='".$data->instructions."', category='".$data->category."', tags='".$data->tags."', walkthrough='".$data->walkthrough."', width='".$data->width."', height='".$data->height."', file='', thumb='', status='".$data->status."' WHERE id=".$id." LIMIT 1");
 
-						if($file === true && $thumb === true) {
-							$db->query("UPDATE games SET name='".$data->name."', slug='".$data->slug."', description='".$data->description."', instructions='".$data->instructions."', category='".$data->category."', tags='".$data->tags."', walkthrough='".$data->walkthrough."', width='".$data->width."', height='".$data->height."', file='', thumb='', status='".$data->status."' WHERE id=".$id." LIMIT 1");
-
-							if($db->affected_rows()) {
-								$bone->message('Game "'.$data->name.'" modified successfully!');
-								$bone->redirect($this->id());
-							} else {
-								$bone->message('A problem occured while trying to modify the game!', 'error');
-							}
+						if($db->affected_rows()) {
+							$bone->message('Game "'.$data->name.'" modified successfully!');
+							$bone->redirect($this->id());
 						} else {
-							$bone->delete_file("../".$KAS->files_path()."".$data->slug.".swf");
-							$bone->delete_file("../".$KAS->files_path()."".$data->slug.".jpg");
-							$bone->message('A problem occured while trying to upload the files!', 'error');
+							$bone->message('A problem occured while trying to modify the game!', 'error');
 						}
 					} else {
 						$bone->message('A game with the given slug "'.$data->slug.'" already exists!', 'error');
@@ -116,6 +106,7 @@ class Games extends Section {
 	}
 
 	private function verify_input($data, $optional=null) {
+		$KAS = KAS::instance();
 		$return = null;
 		$fields = array("name", "slug", "description", "instructions", "category", "tags", "walkthrough", "width", "height", "file", "thumb", "status");
 
@@ -185,15 +176,21 @@ class Games extends Section {
 			}
 
 			// File
-			if(!empty($data['file'])) {
-				$result->file = $data['file'];
+			if(!empty($data['file']) && !empty($data['file']['tmp_name'])) {
+				$result->file = FileManager::upload($data['file'], "../".$KAS->files_path(), $data['slug']);
+				if($result->file === false) {
+					$result->file = "";
+				}
 			} else {
 				$result->file = "";
 			}
 
 			// Thumb
-			if(!empty($data['thumb'])) {
-				$result->thumb = $data['thumb'];
+			if(!empty($data['thumb']) && !empty($data['thumb']['tmp_name'])) {
+				$result->thumb = FileManager::upload($data['thumb'], "../".$KAS->thumbs_path(), $data['slug']);
+				if($result->thumb === false) {
+					$result->thumb = "";
+				}
 			} else {
 				$result->thumb = "";
 			}
