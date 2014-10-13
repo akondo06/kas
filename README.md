@@ -18,7 +18,6 @@ A simple script for arcades!
 
 
 ## BUGS
-- Upload file function in backbone (using finfo_open for the file type and as secure as possible! (maybe auto chmod too ..))
 - CREATE A Validation Class for the administration to put all the validations in one place, same for all queries!
 - LEFT AT object_has_fields in $bone and at the edit part in LINKS section!
 - LEFT AT game edit section!
