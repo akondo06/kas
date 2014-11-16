@@ -74,7 +74,7 @@ class Database {
 	}
 	
 	public function secure($data=null) {
-		if($data !== null || !is_bool($data)) {
+		if($data !== null && !(is_bool($data) || is_numeric($data))) {
 			if(!is_array($data) && is_object($data)) {
 				$fields = get_object_vars($data);
 				foreach($fields as $var => $value) {

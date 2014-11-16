@@ -4,7 +4,8 @@
 	ini_set('post_max_size', '40M');
 	ini_set('max_input_time', 600);
 	ini_set('max_execution_time', 600);
-	require_once("_backbone.php");
+
+	require_once("classes/backbone.php");
 
 	$bone = Backbone::instance();
 

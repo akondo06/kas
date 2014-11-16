@@ -50,7 +50,7 @@
 				<ul>
 					<?php
 						$list = KAS_List::instance();
-						$args = array("limit" => 9999, "order_by" => "name", "order" => "asc", "pattern" => "<li><a href=\"[LINK]\">[NAME] games</a></li>\n");
+						$args = array("limit" => 9999, "order_by" => "name", "order" => "asc");
 						echo $list->categories($args);
 					?>
 				</ul>

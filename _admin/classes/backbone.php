@@ -1,13 +1,19 @@
 <?php
 
-require_once("../_kas/classes/db_config.php");
-require_once("../_kas/classes/cache.php");
-require_once("../_kas/classes/database.php");
-require_once("../_kas/classes/session.php");
-require_once("../_kas/classes/router.php");
-require_once("../_kas/classes/kas.php");
-require_once("../_kas/classes/list.php");
+define('KASROOT', "../");
+require_once(KASROOT."_kas/classes/db_config.php");
+require_once(KASROOT."_kas/classes/cache.php");
+require_once(KASROOT."_kas/classes/database.php");
+require_once(KASROOT."_kas/classes/session.php");
+require_once(KASROOT."_kas/classes/router.php");
+require_once(KASROOT."_kas/classes/kas.php");
+require_once(KASROOT."_kas/classes/list.php");
 
+require_once("exceptions.php");
+require_once("validator.php");
+require_once("validator.php");
+require_once("database/DatabaseRow.php");
+require_once("database/AdvertismentRow.php");
 require_once("fileManager.php");
 require_once("section.php");
 require_once("form.php");

@@ -219,9 +219,11 @@ class KAS {
 	
 	private function initiate_settings() {
 		$db = $this->db_connection();
-		$result = $db->query("SELECT * FROM `settings` WHERE `id`=1 LIMIT 1;");
+		$result = $db->query("SELECT * FROM settings WHERE id=1 LIMIT 1;");
 		if(is_array($result) && (count($result) > 0) && is_object($result[0])) {
-			$this->settings = $result[0];
+			$obj = $result[0];
+			unset($obj->id);
+			$this->settings = $obj;
 		} else {
 			exit("Error: Could not get the settings from the Database.");
 		}
