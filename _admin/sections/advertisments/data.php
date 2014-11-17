@@ -53,9 +53,12 @@ class Advertisments extends Section {
 				if($save === true) {
 					$bone->message('Advertisment modified successfully!');
 					$bone->redirect($this->id());
-				} else {
+				} else if(is_array($save)){
 					$errors = implode(' ', $save);
 					$bone->message($errors, 'error');
+				} else {
+					$bone->message('Nothing to change or could not save the changes.', 'info');
+					$bone->redirect($this->id());
 				}
 			}
 

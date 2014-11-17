@@ -162,7 +162,7 @@ class Backbone {
 	public function message($msg=null, $type="success") {
 		$KAS = KAS::instance();
 		if(is_string($msg)) {
-			if(!($type == 'success' || $type == 'error' || $type == 'warning')) {
+			if(!($type == 'success' || $type == 'error' || $type == 'warning' || $type == 'info')) {
 				$type = "success";
 			}
 			$KAS->session()->set('message', array('type' => $type, 'message' => $msg));
