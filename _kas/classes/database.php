@@ -44,6 +44,7 @@ class Database {
 			$data = $current_cache->get($query);
 			if($data === FALSE || $this->cache == null) {
 				$data = $current_type->query($query);
+				$data = $this->stripslashes($data);
 				$current_cache->set($query, $data);
 			} else {
 				$this->cached_queries_no++;
@@ -51,6 +52,7 @@ class Database {
 			$return = $data;
 		} else {
 			$return = $current_type->query($query);
+			$return = $this->stripslashes($return);
 		}
 		$this->result = $return;
 		$this->queries_no++;
@@ -87,6 +89,24 @@ class Database {
 			} else {
 				$type = $this->type;
 				return $type->secure($data);
+			}
+		}
+		return $data;
+	}
+
+	public function stripslashes($data=null) {
+		if($data !== null && !(is_bool($data) || is_numeric($data))) {
+			if(!is_array($data) && is_object($data)) {
+				$fields = get_object_vars($data);
+				foreach($fields as $var => $value) {
+					$data->$var = $this->stripslashes($value);
+				}
+			} else if(is_array($data)) {
+				foreach($data as $var => $value) {
+					$data[$var] = $this->stripslashes($value);
+				}
+			} else {
+				return stripslashes($data);
 			}
 		}
 		return $data;

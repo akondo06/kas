@@ -46,9 +46,20 @@ $(document).ready(function() {
     headtabs(".tabs a", ".tabscontent > div");
 
     $('.nav').click(function(e) {
-        var list = $(this).find('.topmenu');
+        var list = $('.nav .topmenu');
         if (list.length > 0 && parseInt($(this).width()) < 100) {
-            list.toggle();
+            list.fadeToggle('fast');
         }
     });
+
+    $(window).click(function(e) {
+		if($(e.target).closest('.nav').length > 0) {
+			return;
+		}
+		var nav = $('.nav');
+		var list = nav.find('.topmenu');
+        if (list.length > 0 && parseInt(nav.width()) < 100) {
+            list.fadeOut('fast');
+        }
+	});
 });
